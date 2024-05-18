@@ -2042,16 +2042,16 @@
         },
         {
             "name": "mongodb/mongodb",
-            "version": "1.18.0",
+            "version": "1.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mongodb/mongo-php-library.git",
-                "reference": "d421c418ef56a96f3dfa6b2828f936df6848ccf9"
+                "reference": "cbc8104c0b2c32b7cf572ff759324c872e8dc63a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/d421c418ef56a96f3dfa6b2828f936df6848ccf9",
-                "reference": "d421c418ef56a96f3dfa6b2828f936df6848ccf9",
+                "url": "https://api.github.com/repos/mongodb/mongo-php-library/zipball/cbc8104c0b2c32b7cf572ff759324c872e8dc63a",
+                "reference": "cbc8104c0b2c32b7cf572ff759324c872e8dc63a",
                 "shasum": ""
             },
             "require": {
@@ -2074,7 +2074,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.18.x-dev"
+                    "dev-master": "1.x-dev"
                 }
             },
             "autoload": {
@@ -2113,9 +2113,9 @@
             ],
             "support": {
                 "issues": "https://github.com/mongodb/mongo-php-library/issues",
-                "source": "https://github.com/mongodb/mongo-php-library/tree/1.18.0"
+                "source": "https://github.com/mongodb/mongo-php-library/tree/1.19.0"
             },
-            "time": "2024-03-27T17:04:50+00:00"
+            "time": "2024-05-10T19:49:08+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -6632,16 +6632,16 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "1.6.11",
+            "version": "1.6.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "81a161d0b135df89951abd52296adf97deb0723d"
+                "reference": "1f4efdd7d3beafe9807b08156dfcb176d18f1699"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/81a161d0b135df89951abd52296adf97deb0723d",
-                "reference": "81a161d0b135df89951abd52296adf97deb0723d",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/1f4efdd7d3beafe9807b08156dfcb176d18f1699",
+                "reference": "1f4efdd7d3beafe9807b08156dfcb176d18f1699",
                 "shasum": ""
             },
             "require": {
@@ -6711,7 +6711,7 @@
                 "security": "https://github.com/mockery/mockery/security/advisories",
                 "source": "https://github.com/mockery/mockery"
             },
-            "time": "2024-03-21T18:34:15+00:00"
+            "time": "2024-05-16T03:13:13+00:00"
         },
         {
             "name": "myclabs/deep-copy",

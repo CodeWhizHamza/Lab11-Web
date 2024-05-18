@@ -33,9 +33,15 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('DB_URI', 'mongodb://localhost:27017/'),
-            'database' => 'GeoCityLiteDB',
+            'dsn' => env('DB_URI', 'mongodb+srv://zahidfaakhir:18.July.2004@cluster0.ojvotpr.mongodb.net/'),
+            'database' => 'maps',
         ],
+
+        // 'mongodb' => [
+        //     'driver' => 'mongodb',
+        //     'dsn' => env('DB_URI', 'mongodb://localhost:27017/'),
+        //     'database' => 'GeoCityLiteDB',
+        // ],
 
         'sqlite' => [
             'driver' => 'sqlite',

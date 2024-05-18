@@ -5,7 +5,8 @@ use App\Http\Controllers\CityController;
 use App\Models\Location;
 
 Route::get('/', function () {
-    return view('home', ['all_cities' => Location::limit(1000)->get()]);
+    return view('home', ['all_cities' => Location::where('city', '!=', '')->limit(500)->get()]);
+
 })->name('home');
 
 Route::post('/get-cities', [CityController::class, 'get_cities'])->name('get-cities');

@@ -9,7 +9,7 @@ class Location extends Model
     
     protected $connection = "mongodb";
 
-    protected $collection = 'location';
+    protected $collection = 'newcities';
 
     protected $fillable = [
         "locId",
@@ -18,12 +18,11 @@ class Location extends Model
         "city",
         "latitude",
         "longitude",
+        "loc"
+    ];
+    protected $casts = [
+        'longitude' => 'float',
+        'latitude' => 'float',
     ];
 
-    protected $casts = [
-        "locId" => "integer",
-        "region" => "integer",
-        "latitude" => "float",
-        "longitude" => "float",
-    ];
 }

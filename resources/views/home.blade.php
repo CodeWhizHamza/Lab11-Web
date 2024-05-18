@@ -8,63 +8,77 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            content: ["./*.html"],
+            theme: {
+                extend: {},
+            },
+            darkMode: "class",
+        };
+    </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <style>
+        .dark .leaflet-layer,
+        .dark .leaflet-control-zoom-in,
+        .dark .leaflet-control-zoom-out,
+        .dark .leaflet-control-attribution {
+            filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+        }
+    </style>
 
 </head>
 
-<body>
-    <div class="container mx-auto">
-        <div class="flex justify-center">
-            <div class="w-1/2">
-                <h1 class="text-3xl font-bold text-center">GeoCityLite</h1>
-                <p class="text-center">A simple web application to get the 5 closest cities based on the City Name or Latitude and Longitude given.</p>
-                <form id="city-form">
-                    @csrf
-                    <div class="flex flex-col mt-4 justify-center">
-                        <div class="flex justify-center">
-                            <label for="city" class="w-1/4">City Name:</label>
-                            <input type="text" name="city" id="city" class="w-3/4 px-2 py-1 border border-gray-400 rounded">
-                        </div>
-                        <hr class="my-4">
-                        <button type="submit" id="ajaxSubmit" class="px-4 py-2 bg-blue-500 text-white rounded">Search</button>
+<body style='min-width: 100vw; min-height: 100vh;' class="bg-gradient-to-tr from-[#2E3192] to-[#1bffff]">
+    <div style='min-width: 100vw; min-height: 100vh;' class="container grid place-items-center">
+
+        <div class='bg-white text-bg-slate-600 dark:bg-slate-600 dark:text-white mx-auto p-4 rounded-lg shadow-lg'
+            style='max-height: fit-content;'>
+            <h1 class="text-4xl font-bold text-center">GeoCityLite</h1>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                <div class="col-span-2">
+                    <div class="flex flex-col justify-center mb-4">
+                        <label for="city-select"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Choose a city</label>
+                        <select id="city-select"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            @php
+                                $all_cities = $all_cities->sortBy('city');
+                            @endphp
+                            @foreach ($all_cities as $city)
+                                <option value="{{ $city->city }}">{{ $city->city }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                </form>
-
-                <hr class="my-4">
-
-                <!-- Cities Dropdown Selection -->
-                <div class="flex justify-center">
-                    <label for="city-select" class="w-1/4">Select City:</label>
-                    <select name="city-select" id="city-select" class="w-3/4 px-2 py-1 border border-gray-400 rounded">
-                        @foreach ($all_cities as $city)
-                        <option value="{{ $city->city }}">{{ $city->city }}</option>
-                        @endforeach
-                    </select>
+                    <div id="map" style="height: 60vh;"></div>
                 </div>
-
-                <hr class="my-4">
-
-                <div id="map" style="height: 400px;">
-                </div>
-
-
                 <div class="mt-4" id="cities">
-                    <h2 class="text-2xl font-bold text-center">5 Closest Cities</h2>
-                    <table class="w-full mt-4">
-                        <thead>
-                            <tr>
-                                <th class="border border-gray-400 px-4 py-2">City</th>
-                                <th class="border border-gray-400 px-4 py-2">Country</th>
-                                <th class="border border-gray-400 px-4 py-2">Distance (KM)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-body">
-
-                        </tbody>
-                    </table>
+                    <h2 class="text-2xl font-bold text-center mb-4">5 Closest Cities</h2>
+                    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <thead
+                                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">
+                                        City
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Country
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Distance (KM)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id='table-body'></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,23 +122,36 @@
 
                                 for (var i = 0; i < cities.length; i++) {
                                     if (cities[i].city.city === city.city) {
-                                        map.setView([cities[i].city.latitude, cities[i].city.longitude], 6);
+                                        map.setView([cities[i].city.latitude, cities[i].city
+                                            .longitude
+                                        ], 6);
                                         popup
-                                            .setLatLng([cities[i].city.latitude, cities[i].city.longitude])
-                                            .setContent(city.city + "  " + [cities[i].city.latitude, cities[i].city.longitude].toString())
+                                            .setLatLng([cities[i].city.latitude, cities[i].city
+                                                .longitude
+                                            ])
+                                            .setContent(city.city + "  " + [cities[i].city.latitude,
+                                                cities[i].city.longitude
+                                            ].toString())
                                             .openOn(map);
                                         continue;
                                     }
+                                    let row = `
+                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            ${cities[i].city.city}
+                                        </th>
+                                        <td class="px-6 py-4">
+                                            ${cities[i].city.country}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            ${cities[i].distance}
+                                        </td>
+                                    </tr>`;
+                                    table.innerHTML += row;
 
-                                    let row = table.insertRow(-1);
-                                    let cell1 = row.insertCell(0);
-                                    let cell2 = row.insertCell(1);
-                                    let cell3 = row.insertCell(2);
-                                    cell1.innerHTML = cities[i].city.city;
-                                    cell2.innerHTML = cities[i].city.country;
-                                    cell3.innerHTML = cities[i].distance;
-
-                                    var marker = L.marker([cities[i].city.latitude, cities[i].city.longitude]).addTo(map);
+                                    var marker = L.marker([cities[i].city.latitude, cities[i].city
+                                        .longitude
+                                    ]).addTo(map);
 
                                 }
                             } else {
@@ -174,20 +201,29 @@
                                     map.setView([cities[i].city.latitude, cities[i].city.longitude], 6);
                                     popup
                                         .setLatLng([cities[i].city.latitude, cities[i].city.longitude])
-                                        .setContent(city.city + "  " + [cities[i].city.latitude, cities[i].city.longitude].toString())
+                                        .setContent(city.city + "  " + [cities[i].city.latitude, cities[i].city
+                                            .longitude
+                                        ].toString())
                                         .openOn(map);
                                     continue;
                                 }
 
-                                let row = table.insertRow(-1);
-                                let cell1 = row.insertCell(0);
-                                let cell2 = row.insertCell(1);
-                                let cell3 = row.insertCell(2);
-                                cell1.innerHTML = cities[i].city.city;
-                                cell2.innerHTML = cities[i].city.country;
-                                cell3.innerHTML = cities[i].distance;
+                                let row = `
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                        ${cities[i].city.city}
+                                    </th>
+                                    <td class="px-6 py-4">
+                                        ${cities[i].city.country}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        ${cities[i].distance}
+                                    </td>
+                                </tr>`;
+                                table.innerHTML += row;
 
-                                var marker = L.marker([cities[i].city.latitude, cities[i].city.longitude]).addTo(map);
+                                var marker = L.marker([cities[i].city.latitude, cities[i].city.longitude]).addTo(
+                                    map);
 
                             }
                         } else {
@@ -243,20 +279,29 @@
                                     map.setView([cities[i].city.latitude, cities[i].city.longitude], 6);
                                     popup
                                         .setLatLng([cities[i].city.latitude, cities[i].city.longitude])
-                                        .setContent(city.city + "  " + [cities[i].city.latitude, cities[i].city.longitude].toString())
+                                        .setContent(city.city + "  " + [cities[i].city.latitude, cities[i]
+                                            .city.longitude
+                                        ].toString())
                                         .openOn(map);
                                     continue;
                                 }
 
-                                let row = table.insertRow(-1);
-                                let cell1 = row.insertCell(0);
-                                let cell2 = row.insertCell(1);
-                                let cell3 = row.insertCell(2);
-                                cell1.innerHTML = cities[i].city.city;
-                                cell2.innerHTML = cities[i].city.country;
-                                cell3.innerHTML = cities[i].distance;
+                                let row = `
+                                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <th scope="row" class="px-2 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            ${cities[i].city.city}
+                                        </th>
+                                        <td class="px-2 py-4">
+                                            ${cities[i].city.country}
+                                        </td>
+                                        <td class="px-2 py-4">
+                                            ${Math.round(cities[i].distance * 100) / 100}
+                                        </td>
+                                    </tr>`;
+                                table.innerHTML += row;
 
-                                var marker = L.marker([cities[i].city.latitude, cities[i].city.longitude]).addTo(map);
+                                var marker = L.marker([cities[i].city.latitude, cities[i].city.longitude])
+                                    .addTo(map);
 
                             }
                         } else {
@@ -266,7 +311,6 @@
                 });
             });
         </script>
-
 </body>
 
 </html>
